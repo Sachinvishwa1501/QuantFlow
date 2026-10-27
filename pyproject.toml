@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quantflow"
+version = "0.1.0"
+description = "Production-grade quantitative trading research platform foundation for Indian equity markets."
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "Proprietary" }
+authors = [{ name = "QuantFlow Engineering" }]
+dependencies = [
+    "alembic>=1.16.2",
+    "duckdb>=1.3.1",
+    "fastapi>=0.115.13",
+    "polars>=1.31.0",
+    "psycopg[binary]>=3.2.9",
+    "pydantic-settings>=2.10.1",
+    "python-json-logger>=3.3.0",
+    "sqlalchemy>=2.0.41",
+    "structlog>=25.4.0",
+    "uvicorn[standard]>=0.34.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=25.1.0",
+    "httpx>=0.28.1",
+    "mypy>=1.16.1",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+    "ruff>=0.12.1",
+]
+
+[project.scripts]
+quantflow-api = "quantflow.api.main:run"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quantflow"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config --cov=quantflow --cov-report=term-missing"
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["B", "C4", "E", "F", "I", "N", "UP", "W"]
+
+[tool.black]
+target-version = ["py313"]
+line-length = 100
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+mypy_path = "src"
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = ["duckdb.*"]
+ignore_missing_imports = true
